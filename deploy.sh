@@ -76,12 +76,17 @@ sudo -H -u www-data ./venv/bin/pip install gunicorn
 print_status "Initializing database..."
 cd $BACKEND_PATH
 export FLASK_APP=app.py
-# Only run db init if migrations directory doesn't exist
-if [ ! -d "migrations" ]; then
-    sudo -H -u www-data ./venv/bin/flask db init
+
+# Remove old migrations if they exist (to avoid SQLite vs PostgreSQL conflicts)
+if [ -d "migrations" ]; then
+    print_status "Removing old migrations to avoid database conflicts..."
+    sudo -H -u www-data rm -rf migrations
 fi
-sudo -H -u www-data ./venv/bin/flask db migrate -m "Auto migration" || true
-sudo -H -u www-data ./venv/bin/flask db upgrade || true
+
+# Initialize fresh migrations
+sudo -H -u www-data ./venv/bin/flask db init
+sudo -H -u www-data ./venv/bin/flask db migrate -m "Initial migration"
+sudo -H -u www-data ./venv/bin/flask db upgrade
 
 # Copy service file from original directory
 print_status "Copying service file..."
