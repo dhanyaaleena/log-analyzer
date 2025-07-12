@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { 
   Box, Paper, Typography, Card, CardContent, Alert, CircularProgress,
@@ -68,7 +68,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 // Helper functions removed as they are not used
 
-export default function DashboardPage() {
+function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fileId = searchParams.get("file_id");
@@ -931,5 +931,17 @@ export default function DashboardPage() {
 
       </Box>
     </Box>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 } 
