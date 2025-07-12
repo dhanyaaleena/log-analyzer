@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, Typography, Button, Box, LinearProgress, Alert, Divider, Paper } from "@mui/material";
+import { Typography, Button, Box, LinearProgress, Alert, Divider, Paper } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import axios from "axios";
+import api from "../../lib/api";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function UploadPage() {
       const formData = new FormData();
       formData.append("file", file);
       // Upload file
-      const uploadRes = await axios.post(
+      const uploadRes = await api.post(
         "/api/upload",
         formData,
         {
@@ -57,7 +57,8 @@ export default function UploadPage() {
       window.localStorage.setItem("log_files", JSON.stringify(files));
       setMessage("File uploaded. Running analysis...");
       // Trigger analysis
-      const analysisRes = await axios.post(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const analysisRes = await api.post(
         "/api/analysis/run",
         { file_id: fileId, use_llm: true },
         {
@@ -69,7 +70,7 @@ export default function UploadPage() {
       );
       // Redirect to SOC dashboard with file_id as query param
       router.push(`/dashboard?file_id=${fileId}`);
-    } catch (err: any) {
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       setError(err?.response?.data?.msg || "Upload or analysis failed");
     } finally {
       setUploading(false);

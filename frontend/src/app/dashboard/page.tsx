@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { 
   Box, Paper, Typography, Card, CardContent, Alert, CircularProgress,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Chip, Divider, IconButton, Tooltip, Collapse
+  Chip, IconButton, Tooltip, Collapse
 } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import { 
@@ -16,14 +16,11 @@ import {
   Warning as WarningIcon,
   TrendingUp as TrendingUpIcon,
   Computer as ComputerIcon,
-  Language as LanguageIcon,
-  Timeline as TimelineIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon
 } from "@mui/icons-material";
-import ReactMarkdown from 'react-markdown';
 import React from 'react';
-import axios from "axios";
+import api from "../../lib/api";
 
 interface DashboardMetrics {
   total_logs: number;
@@ -36,6 +33,7 @@ interface DashboardMetrics {
   timeline_data: Array<{
     id: string; // Added id for mapping
     timestamp: string;
+    time: string; // Added time property for chart display
     bytes_sent: number;
     src_ip: string;
     domain: string;
@@ -68,38 +66,7 @@ interface DashboardMetrics {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
-// Helper for risk badge
-const getRiskBadge = (text: string) => {
-  const lower = text.toLowerCase();
-  if (lower.includes('high')) return <Chip label="High Risk" size="small" sx={{ bgcolor: '#f44336', color: '#fff', ml: 1, fontWeight: 700 }} icon={<span style={{fontSize:18}}>⚠️</span>} />;
-  if (lower.includes('medium')) return <Chip label="Medium Risk" size="small" sx={{ bgcolor: '#ff9800', color: '#fff', ml: 1, fontWeight: 700 }} icon={<span style={{fontSize:18}}>🟠</span>} />;
-  if (lower.includes('low')) return <Chip label="Low Risk" size="small" sx={{ bgcolor: '#4caf50', color: '#fff', ml: 1, fontWeight: 700 }} icon={<span style={{fontSize:18}}>🟢</span>} />;
-  return null;
-};
-
-// Helper for section icon
-const getSectionIcon = (text: string) => {
-  const lower = text.toLowerCase();
-  if (lower.includes('major issue') || lower.includes('immediate action')) return <span style={{fontSize:22, marginRight:8}}>⚠️</span>;
-  if (lower.includes('recommendation') || lower.includes('mitigation')) return <span style={{fontSize:22, marginRight:8}}>🛡️</span>;
-  if (lower.includes('risk')) return <span style={{fontSize:22, marginRight:8}}>🔎</span>;
-  if (lower.includes('investigation')) return <span style={{fontSize:22, marginRight:8}}>🔬</span>;
-  return null;
-};
-
-// Helper to wrap IPs/domains in <code>
-const wrapIPsAndDomains = (text: string) => {
-  // Regex for IPv4 and domain
-  const ipRegex = /\b(\d{1,3}\.){3}\d{1,3}\b/g;
-  const domainRegex = /\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/g;
-  // Replace IPs and domains with <code> elements
-  return text.split(/(\b(?:\d{1,3}\.){3}\d{1,3}\b|\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b)/g).map((part, i) => {
-    if (ipRegex.test(part) || (domainRegex.test(part) && !/^\d{1,3}(?:\.\d{1,3}){3}$/.test(part))) {
-      return <code key={i} style={{background:'rgba(0,0,0,0.18)', color:'#fff', fontFamily:'monospace', borderRadius:4, padding:'2px 6px', fontSize:'0.97em', margin:'0 2px'}}>{part}</code>;
-    }
-    return part;
-  });
-};
+// Helper functions removed as they are not used
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -108,7 +75,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
-  const [hoveredDot, setHoveredDot] = useState<any | null>(null); // <-- Add hoveredDot state
+  const [hoveredDot, setHoveredDot] = useState<DashboardMetrics['timeline_data'][0] | null>(null);
   const [anomalyPage, setAnomalyPage] = useState(1);
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const anomaliesPerPage = 10;
@@ -161,7 +128,7 @@ export default function DashboardPage() {
     }
     const fetchDashboard = async () => {
       try {
-        const res = await axios.get(
+        const res = await api.get(
           `/api/analysis/dashboard/${fileId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -190,48 +157,7 @@ export default function DashboardPage() {
     }
   };
 
-  const getTypeColor = (type: string) => {
-    const typeColors: Record<string, string> = {
-      'brute_force_403': 'error',
-      'data_exfiltration': 'error',
-      'suspicious_domain': 'error',
-      'automation_detected': 'warning',
-      'rare_domain': 'warning',
-      'isolation_forest': 'info',
-      'lof': 'info',
-      'ml': 'info'
-    };
-    return typeColors[type] || 'default';
-  };
-
-  const getCategoryColor = (category: string) => {
-    const categoryColors: Record<string, string> = {
-      'Brute Force': 'error',
-      'Automation/Bot': 'warning',
-      'Malware/Phishing': 'error',
-      'Unusual Activity': 'info',
-      'Data Exfiltration': 'error',
-      'Anomalous Behavior': 'secondary',
-      'Other': 'default'
-    };
-    return categoryColors[category] || 'default';
-  };
-
-  const getThreatCategory = (anomalyType: string | undefined | null) => {
-    switch (anomalyType) {
-      case 'brute_force_403': return 'Brute Force';
-      case 'automation_detected': return 'Automation/Bot';
-      case 'suspicious_domain': return 'Malware/Phishing';
-      case 'rare_domain': return 'Unusual Activity';
-      case 'data_exfiltration': return 'Data Exfiltration';
-      case 'isolation_forest':
-      case 'lof':
-      case 'ml':
-      case 'ml_anomaly':
-        return 'Anomalous Behavior';
-      default: return 'Other';
-    }
-  };
+  // Helper functions removed as they are not used
 
   // Add this color map near the top of the file
   const categoryColorMap: Record<string, string> = {
@@ -275,6 +201,7 @@ export default function DashboardPage() {
   };
 
   // Use all anomalies for pagination (if not present, fallback to recent_anomalies)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const allAnomalies = Array.isArray((metrics as any)?.anomalies) ? (metrics as any).anomalies : (metrics?.recent_anomalies || []);
   const totalAnomalyPages = Math.ceil(allAnomalies.length / anomaliesPerPage);
   const paginatedAnomalies = allAnomalies.slice((anomalyPage - 1) * anomaliesPerPage, anomalyPage * anomaliesPerPage);
@@ -303,11 +230,7 @@ export default function DashboardPage() {
     );
   }
 
-  // Prepare chart data
-  const typeChartData = Object.entries(metrics.anomalies_by_type).map(([type, count]) => ({
-    name: type.replace('_', ' ').toUpperCase(),
-    value: count
-  }));
+  // Prepare chart data - removed unused typeChartData
 
   const severityChartData = Object.entries(metrics.anomalies_by_severity).map(([severity, count]) => ({
     name: severity.toUpperCase(),
@@ -893,7 +816,7 @@ export default function DashboardPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedAnomalies.map((row: any, index: number) => (
+                {paginatedAnomalies.map((row: any, index: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
                   <TableRow key={index}>
                     <TableCell>{row.timestamp}</TableCell>
                     <TableCell>

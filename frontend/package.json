@@ -2,6 +2,10 @@
   "name": "log-analyzer-frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -17,7 +21,7 @@
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "framer-motion": "^12.23.0",
-    "marked": "^16.0.0",
+    "marked": "^9.1.6",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

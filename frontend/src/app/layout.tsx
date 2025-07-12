@@ -1,6 +1,6 @@
 "use client";
 
-import type { Metadata } from "next";
+// Metadata import removed as it's not used
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppBar, Toolbar, Typography, Button, Box, Container } from "@mui/material";

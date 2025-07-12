@@ -5,9 +5,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@mui/material/styles";
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000") + "/api/auth";
+const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000") + "/auth";
 
 export default function RegisterPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const theme = useTheme();
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -34,7 +35,7 @@ export default function RegisterPage() {
         setSuccess("Registration successful! Redirecting to login...");
         setTimeout(() => router.replace("/login"), 1500);
       }
-    } catch (err) {
+    } catch (err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError("Network error");
     }
     setLoading(false);

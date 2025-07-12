@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Paper, Typography, Button, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Alert, LinearProgress } from "@mui/material";
+import { Box, Paper, Typography, Button, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Alert, LinearProgress } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import axios from "axios";
+import api from "../lib/api";
 
 interface StoredFile {
   id: string;
@@ -58,16 +58,12 @@ export default function DashboardPage() {
       const formData = new FormData();
       formData.append("file", file);
       // Upload file
-      const uploadRes = await axios.post(
-        "/api/upload",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const uploadRes = await api.post("/api/upload", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       const fileId = uploadRes.data.logfile_id;
       // Store file info in localStorage
       const fileInfo = { id: fileId, name: file.name, uploaded: new Date().toISOString() };
@@ -85,7 +81,8 @@ export default function DashboardPage() {
       setCurrentPage(1); // Reset to first page to show newest files
       setMessage("File uploaded. Running analysis...");
       // Trigger analysis
-      const analysisRes = await axios.post(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const analysisRes = await api.post(
         "/api/analysis/run",
         { file_id: fileId, use_llm: true },
         {
@@ -101,7 +98,7 @@ export default function DashboardPage() {
       setTimeout(() => {
         router.push(`/dashboard?file_id=${fileId}`);
       }, 1500);
-    } catch (err: any) {
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       setError(err?.response?.data?.msg || "Upload or analysis failed");
     } finally {
       setUploading(false);
