@@ -32,12 +32,16 @@ if [[ $EUID -eq 0 ]]; then
    exit 1
 fi
 
+# Store the original working directory (where the script is run from)
+ORIGINAL_DIR="$(pwd)"
+
 # Set deployment paths
 BACKEND_PATH="/var/www/log-analyzer/backend"
 FRONTEND_PATH="/var/www/log-analyzer/frontend"
 FRONTEND_BUILD_PATH="/var/www/log-analyzer-frontend"
 
 print_status "Setting up deployment paths..."
+print_status "Original directory: $ORIGINAL_DIR"
 
 # Create directories if they don't exist
 sudo mkdir -p $BACKEND_PATH
@@ -67,25 +71,24 @@ cd $BACKEND_PATH
 sudo -H -u www-data ./venv/bin/pip install -r requirements.txt
 sudo -H -u www-data ./venv/bin/pip install gunicorn
 
-# Copy service file from current directory
+# Copy service file from original directory
 print_status "Copying service file..."
-if [ -f "backend/log-analyzer.service" ]; then
-    sudo cp backend/log-analyzer.service /etc/systemd/system/
+if [ -f "$ORIGINAL_DIR/backend/log-analyzer.service" ]; then
+    sudo cp "$ORIGINAL_DIR/backend/log-analyzer.service" /etc/systemd/system/
     print_status "Service file copied successfully"
 else
-    print_error "Service file not found at backend/log-analyzer.service"
-    print_status "Current directory: $(pwd)"
-    print_status "Available files in backend/:"
-    ls -la backend/ || true
+    print_error "Service file not found at $ORIGINAL_DIR/backend/log-analyzer.service"
+    print_status "Available files in original directory:"
+    ls -la "$ORIGINAL_DIR" || true
     exit 1
 fi
 sudo systemctl daemon-reload
 
 print_status "Deploying Frontend..."
 
-# Build frontend from current directory
+# Build frontend from original directory
 print_status "Building Next.js application..."
-cd frontend
+cd "$ORIGINAL_DIR/frontend"
 npm install
 npm run build
 
