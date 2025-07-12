@@ -68,7 +68,17 @@ sudo -H -u www-data ./venv/bin/pip install -r requirements.txt
 sudo -H -u www-data ./venv/bin/pip install gunicorn
 
 # Copy service file from current directory
-sudo cp backend/log-analyzer.service /etc/systemd/system/
+print_status "Copying service file..."
+if [ -f "backend/log-analyzer.service" ]; then
+    sudo cp backend/log-analyzer.service /etc/systemd/system/
+    print_status "Service file copied successfully"
+else
+    print_error "Service file not found at backend/log-analyzer.service"
+    print_status "Current directory: $(pwd)"
+    print_status "Available files in backend/:"
+    ls -la backend/ || true
+    exit 1
+fi
 sudo systemctl daemon-reload
 
 print_status "Deploying Frontend..."
