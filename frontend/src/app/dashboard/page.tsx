@@ -135,7 +135,7 @@ export default function DashboardPage() {
           }
         );
         setMetrics(res.data);
-      } catch (err: any) {
+      } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         setError(err?.response?.data?.msg || "Failed to fetch dashboard metrics");
       } finally {
         setLoading(false);
@@ -176,7 +176,7 @@ export default function DashboardPage() {
   };
 
   // Helper function to extract explanation from anomaly object
-  const getAnomalyExplanation = (anomaly: any): string => {
+  const getAnomalyExplanation = (anomaly: any): string => { // eslint-disable-line @typescript-eslint/no-explicit-any
     // First, try to get explanation from top level
     let explanation = anomaly.explanation || '';
     
@@ -240,6 +240,7 @@ export default function DashboardPage() {
   // Prepare threat category chart data
   const threatCategoryCounts: Record<string, number> = {};
   metrics.recent_anomalies.forEach(a => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cat = (a as any).threat_category || 'Other';
     threatCategoryCounts[cat] = (threatCategoryCounts[cat] || 0) + 1;
   });
@@ -250,7 +251,7 @@ export default function DashboardPage() {
 
   // Prepare blocked vs allowed actions chart data
   const blockedVsAllowedData = Object.entries(metrics.blocked_vs_allowed || {})
-    .filter(([action, count]) => count > 0) // Filter out zero values
+    .filter(([, count]) => count > 0) // Filter out zero values
     .map(([action, count]) => ({
       name: action,
       value: count
@@ -837,7 +838,7 @@ export default function DashboardPage() {
                       {row.severity ? (
                         <Chip 
                           label={row.severity} 
-                          color={getSeverityColor(row.severity) as any}
+                          color={getSeverityColor(row.severity) as 'error' | 'warning' | 'info' | 'default'}
                           size="small"
                         />
                       ) : (
