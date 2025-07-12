@@ -96,7 +96,7 @@ export default function LoginPage() {
         <Divider sx={{ my: 3 }} />
         <Typography align="center" color="text.secondary">
           Don&apos;t have an account?{' '}
-          <Link href="/register" underline="hover" color="primary.main" sx={{ fontWeight: 600 }}>
+          <Link href="/log-analyzer/register" underline="hover" color="primary.main" sx={{ fontWeight: 600 }}>
             Register
           </Link>
         </Typography>

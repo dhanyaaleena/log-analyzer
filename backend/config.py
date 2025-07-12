@@ -19,3 +19,5 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-secret-key")  # never use weak key in prod
+

@@ -33,7 +33,7 @@ export default function RegisterPage() {
         setError(data.msg || "Something went wrong");
       } else {
         setSuccess("Registration successful! Redirecting to login...");
-        setTimeout(() => router.replace("/login"), 1500);
+        setTimeout(() => router.replace("/log-analyzer/login"), 1500);
       }
     } catch (err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError("Network error");
@@ -90,7 +90,7 @@ export default function RegisterPage() {
         <Divider sx={{ my: 3 }} />
         <Typography align="center" color="text.secondary">
           Already have an account?{' '}
-          <Link href="/login" underline="hover" color="primary.main" sx={{ fontWeight: 600 }}>
+          <Link href="/log-analyzer/login" underline="hover" color="primary.main" sx={{ fontWeight: 600 }}>
             Login
           </Link>
         </Typography>
