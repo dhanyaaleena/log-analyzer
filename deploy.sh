@@ -64,8 +64,8 @@ fi
 # Install backend dependencies
 print_status "Installing backend dependencies..."
 cd $BACKEND_PATH
-sudo -u www-data ./venv/bin/pip install -r requirements.txt
-sudo -u www-data ./venv/bin/pip install gunicorn
+sudo -H -u www-data ./venv/bin/pip install -r requirements.txt
+sudo -H -u www-data ./venv/bin/pip install gunicorn
 
 # Copy service file from current directory
 sudo cp backend/log-analyzer.service /etc/systemd/system/
