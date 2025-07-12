@@ -1,0 +1,17 @@
+[Unit]
+Description=Log Analyzer Backend
+After=network.target
+
+[Service]
+Type=exec
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/log-analyzer/backend
+Environment=PATH=/var/www/log-analyzer/backend/venv/bin
+ExecStart=/var/www/log-analyzer/backend/venv/bin/gunicorn -c gunicorn_config.py app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target 
