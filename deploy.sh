@@ -2,6 +2,7 @@
 
 # Log Analyzer Deployment Script
 # This script deploys both backend and frontend from a cloned repository
+# Assumes PostgreSQL is already installed and .env file exists in backend
 
 set -e
 
@@ -58,6 +59,20 @@ print_status "Deploying Backend..."
 # Copy backend files from current directory
 sudo cp -r backend/* $BACKEND_PATH/
 
+# Check if .env file exists in backend
+if [ ! -f "$BACKEND_PATH/.env" ]; then
+    print_warning "No .env file found in backend. Creating a basic one..."
+    sudo tee $BACKEND_PATH/.env > /dev/null <<EOF
+SECRET_KEY=your-super-secret-key-change-this
+JWT_SECRET_KEY=your-jwt-secret-key-change-this
+DATABASE_URL=postgresql://loganalyzer:your_password@localhost:5432/log_analyzer_db
+FLASK_ENV=production
+EOF
+    print_status "Created .env file. Please update it with your actual database credentials."
+else
+    print_status "Using existing .env file in backend"
+fi
+
 # Create virtual environment if it doesn't exist
 if [ ! -d "$BACKEND_PATH/venv" ]; then
     print_status "Creating Python virtual environment..."
@@ -70,6 +85,14 @@ print_status "Installing backend dependencies..."
 cd $BACKEND_PATH
 sudo -H -u www-data ./venv/bin/pip install -r requirements.txt
 sudo -H -u www-data ./venv/bin/pip install gunicorn
+
+# Initialize database with Flask-Migrate
+print_status "Initializing database..."
+cd $BACKEND_PATH
+export FLASK_APP=app.py
+sudo -H -u www-data ./venv/bin/flask db init || true
+sudo -H -u www-data ./venv/bin/flask db migrate -m "Auto migration" || true
+sudo -H -u www-data ./venv/bin/flask db upgrade || true
 
 # Copy service file from original directory
 print_status "Copying service file..."
@@ -217,5 +240,7 @@ sudo systemctl status log-analyzer.service --no-pager
 print_status "✅ Deployment completed successfully!"
 print_status "🌐 Frontend: http://sagestack.org/log-analyzer/"
 print_status "🔧 Backend API: http://sagestack.org/log-analyzer/api/"
+print_status "🗄️ Database: PostgreSQL (using existing .env configuration)"
 print_status "📊 Service status: sudo systemctl status log-analyzer.service"
-print_status "🔄 To update: Run this script again to pull latest changes" 
+print_status "🔄 To update: Run this script again to pull latest changes"
+print_status "📝 Database logs: sudo journalctl -u log-analyzer.service -f" 
