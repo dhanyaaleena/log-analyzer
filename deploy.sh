@@ -32,20 +32,10 @@ if [[ $EUID -eq 0 ]]; then
    exit 1
 fi
 
-# Configuration - Update these variables
-REPO_URL="https://github.com/YOUR_USERNAME/log-analyzer.git"  # Update this
-REPO_BRANCH="main"  # Update this if using a different branch
-CLONE_PATH="/tmp/log-analyzer-deploy"
-
 # Set deployment paths
 BACKEND_PATH="/var/www/log-analyzer/backend"
 FRONTEND_PATH="/var/www/log-analyzer/frontend"
 FRONTEND_BUILD_PATH="/var/www/log-analyzer-frontend"
-
-print_status "Configuration:"
-print_status "Repository: $REPO_URL"
-print_status "Branch: $REPO_BRANCH"
-print_status "Clone Path: $CLONE_PATH"
 
 print_status "Setting up deployment paths..."
 
@@ -59,29 +49,10 @@ sudo chown -R www-data:www-data $BACKEND_PATH
 sudo chown -R www-data:www-data $FRONTEND_BUILD_PATH
 sudo chown -R www-data:www-data /var/log/gunicorn
 
-print_status "Cloning repository..."
-
-# Clean up any existing clone
-if [ -d "$CLONE_PATH" ]; then
-    print_status "Removing existing clone..."
-    rm -rf $CLONE_PATH
-fi
-
-# Clone the repository
-print_status "Cloning from $REPO_URL..."
-git clone -b $REPO_BRANCH $REPO_URL $CLONE_PATH
-
-if [ ! -d "$CLONE_PATH" ]; then
-    print_error "Failed to clone repository"
-    exit 1
-fi
-
-print_status "Repository cloned successfully"
-
 print_status "Deploying Backend..."
 
-# Copy backend files from cloned repo
-sudo cp -r $CLONE_PATH/backend/* $BACKEND_PATH/
+# Copy backend files from current directory
+sudo cp -r backend/* $BACKEND_PATH/
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "$BACKEND_PATH/venv" ]; then
@@ -96,15 +67,15 @@ cd $BACKEND_PATH
 sudo -u www-data ./venv/bin/pip install -r requirements.txt
 sudo -u www-data ./venv/bin/pip install gunicorn
 
-# Copy service file from cloned repo
-sudo cp $CLONE_PATH/backend/log-analyzer.service /etc/systemd/system/
+# Copy service file from current directory
+sudo cp backend/log-analyzer.service /etc/systemd/system/
 sudo systemctl daemon-reload
 
 print_status "Deploying Frontend..."
 
-# Build frontend from cloned repo
+# Build frontend from current directory
 print_status "Building Next.js application..."
-cd $CLONE_PATH/frontend
+cd frontend
 npm install
 npm run build
 
@@ -229,10 +200,6 @@ sudo systemctl reload nginx
 # Check service status
 print_status "Checking service status..."
 sudo systemctl status log-analyzer.service --no-pager
-
-# Clean up cloned repository
-print_status "Cleaning up..."
-rm -rf $CLONE_PATH
 
 print_status "✅ Deployment completed successfully!"
 print_status "🌐 Frontend: http://sagestack.org/log-analyzer/"
