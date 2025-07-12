@@ -83,10 +83,23 @@ if [ -d "migrations" ]; then
     sudo -H -u www-data rm -rf migrations
 fi
 
+# Set environment variables for the migration process
+export DATABASE_URL="postgresql+psycopg2://loganalyzer:db123456@localhost:5432/log_analyzer_db"
+
 # Initialize fresh migrations
-sudo -H -u www-data ./venv/bin/flask db init
-sudo -H -u www-data ./venv/bin/flask db migrate -m "Initial migration"
-sudo -H -u www-data ./venv/bin/flask db upgrade
+print_status "Initializing fresh migrations for PostgreSQL..."
+sudo -H -u www-data ./venv/bin/flask db init || {
+    print_error "Failed to initialize migrations"
+    exit 1
+}
+sudo -H -u www-data ./venv/bin/flask db migrate -m "Initial migration" || {
+    print_error "Failed to create migration"
+    exit 1
+}
+sudo -H -u www-data ./venv/bin/flask db upgrade || {
+    print_error "Failed to apply migration"
+    exit 1
+}
 
 # Copy service file from original directory
 print_status "Copying service file..."

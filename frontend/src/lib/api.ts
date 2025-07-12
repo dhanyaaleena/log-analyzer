@@ -4,10 +4,10 @@ import axios from 'axios';
 const getApiBaseUrl = () => {
   // In development, point to the Flask backend
   if (process.env.NODE_ENV === 'development') {
-    return 'http://127.0.0.1:5000';
+    return 'http://127.0.0.1:5000/log-analyzer';
   }
-  // In production, use relative paths (handled by nginx proxy)
-  return '';
+//   In production, use relative paths (handled by nginx proxy)
+  return '/log-analyzer';
 };
 
 // Create axios instance with base configuration

@@ -7,6 +7,10 @@ class Config:
     # Database configuration with PostgreSQL support
     DATABASE_URL = os.getenv('DATABASE_URL')
     if DATABASE_URL:
+        # Use postgresql+psycopg2:// format for SQLAlchemy with PostgreSQL
+        if DATABASE_URL.startswith('postgresql://'):
+            # Convert to postgresql+psycopg2:// format
+            DATABASE_URL = DATABASE_URL.replace('postgresql://', 'postgresql+psycopg2://', 1)
         SQLALCHEMY_DATABASE_URI = DATABASE_URL
     else:
         # Fallback to SQLite for development

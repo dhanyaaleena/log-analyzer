@@ -6,7 +6,7 @@ from datetime import datetime
 
 upload_bp = Blueprint('upload', __name__)
 
-@upload_bp.route('/', methods=['POST'])
+@upload_bp.route('', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
         return jsonify({'msg': 'No file part'}), 400

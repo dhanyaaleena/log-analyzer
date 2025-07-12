@@ -1,17 +1,17 @@
 [Unit]
 Description=Log Analyzer Backend
-After=network.target
+After=network.target postgresql.service
 
 [Service]
-Type=exec
-User=www-data
-Group=www-data
-WorkingDirectory=/var/www/log-analyzer/backend
-Environment=PATH=/var/www/log-analyzer/backend/venv/bin
-ExecStart=/var/www/log-analyzer/backend/venv/bin/gunicorn -c gunicorn_config.py app:app
-ExecReload=/bin/kill -s HUP $MAINPID
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/log-analyzer/backend
+Environment=PATH=/root/log-analyzer/backend/venv/bin
+EnvironmentFile=/root/log-analyzer/backend/.env
+ExecStart=/root/log-analyzer/backend/venv/bin/gunicorn --bind 0.0.0.0:5000 "app:create_app()"
 Restart=always
-RestartSec=3
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target 

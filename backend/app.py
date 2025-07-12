@@ -10,7 +10,7 @@ def create_app():
     app.config.from_object(Config)
 
     # Most permissive CORS for debugging
-    CORS(app, origins="*", supports_credentials=True, allow_headers="*")
+    CORS(app, origins=["http://localhost:3000"], supports_credentials=True, allow_headers="*")
 
     db.init_app(app)
     jwt.init_app(app)
@@ -23,9 +23,9 @@ def create_app():
     from routes.auth import auth_bp
     from routes.upload import upload_bp
     from routes.analysis import analysis_bp
-    app.register_blueprint(auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(upload_bp, url_prefix='/api/upload')
-    app.register_blueprint(analysis_bp, url_prefix='/api/analysis')
+    app.register_blueprint(auth_bp, url_prefix='/log-analyzer/api/auth')
+    app.register_blueprint(upload_bp, url_prefix='/log-analyzer/api/upload')
+    app.register_blueprint(analysis_bp, url_prefix='/log-analyzer/api/analysis')
 
     # Create upload folder if it doesn't exist
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -37,7 +37,7 @@ def create_app():
         traceback.print_exc()
         return {'error': str(e)}, 500
 
-    @app.route('/')
+    @app.route('/log-analyzer/api/')
     def index():
         return {'status': 'Log Analyzer API running'}
 
