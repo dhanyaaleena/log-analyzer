@@ -59,20 +59,6 @@ print_status "Deploying Backend..."
 # Copy backend files from current directory
 sudo cp -r backend/* $BACKEND_PATH/
 
-# Check if .env file exists in backend
-if [ ! -f "$BACKEND_PATH/.env" ]; then
-    print_warning "No .env file found in backend. Creating a basic one..."
-    sudo tee $BACKEND_PATH/.env > /dev/null <<EOF
-SECRET_KEY=your-super-secret-key-change-this
-JWT_SECRET_KEY=your-jwt-secret-key-change-this
-DATABASE_URL=postgresql://loganalyzer:your_password@localhost:5432/log_analyzer_db
-FLASK_ENV=production
-EOF
-    print_status "Created .env file. Please update it with your actual database credentials."
-else
-    print_status "Using existing .env file in backend"
-fi
-
 # Create virtual environment if it doesn't exist
 if [ ! -d "$BACKEND_PATH/venv" ]; then
     print_status "Creating Python virtual environment..."
