@@ -111,7 +111,7 @@ sudo chown -R www-data:www-data $FRONTEND_BUILD_PATH
 print_status "Configuring Nginx..."
 
 # Create nginx configuration
-sudo tee /etc/nginx/sites-available/log-analyzer > /dev/null <<EOF
+sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
 server {
     listen 80;
     server_name sagestack.org www.sagestack.org;
@@ -196,8 +196,9 @@ server {
 }
 EOF
 
-# Enable the site
-sudo ln -sf /etc/nginx/sites-available/log-analyzer /etc/nginx/sites-enabled/
+# Enable the site (default is already enabled)
+print_status "Using existing default nginx configuration"
+sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 # Test nginx configuration
 sudo nginx -t
