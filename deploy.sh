@@ -76,7 +76,10 @@ sudo -H -u www-data ./venv/bin/pip install gunicorn
 print_status "Initializing database..."
 cd $BACKEND_PATH
 export FLASK_APP=app.py
-sudo -H -u www-data ./venv/bin/flask db init || true
+# Only run db init if migrations directory doesn't exist
+if [ ! -d "migrations" ]; then
+    sudo -H -u www-data ./venv/bin/flask db init
+fi
 sudo -H -u www-data ./venv/bin/flask db migrate -m "Auto migration" || true
 sudo -H -u www-data ./venv/bin/flask db upgrade || true
 
