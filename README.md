@@ -11,17 +11,19 @@ A simple tool that analyzes web server logs to detect security threats and suspi
 ### Option 1: Live Demo
 Visit [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-analyzer/) to test the application.
 
+Sample logs files to test:
+https://github.com/dhanyaaleena/log-analyzer/blob/master/synthetic_web_logs_50.log
+https://github.com/dhanyaaleena/log-analyzer/blob/master/synthetic_web_logs_100.log
+https://github.com/dhanyaaleena/log-analyzer/blob/master/synthetic_web_logs_500.log
+
+Lime Demo is AI Enabled.
+
 ### Option 2: Run Locally with Docker
 
 #### Prerequisites
 - Docker and Docker Compose installed
 - Google Gemini API key (optional, for AI-powered threat analysis and explanations)
 
-**To enable AI features:**
-1. Get an API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Create a `.env` file: `cp env.example .env`
-3. Add your API key: `GOOGLE_API_KEY=your_key_here`
-4. Restart Docker: `docker-compose restart backend`
 
 ### Docker Deployment
 
@@ -69,10 +71,10 @@ Visit [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-an
    - Create default user (admin/admin123)
    - Start Flask backend API
    - Start Next.js frontend
-   - Show real-time logs
+   - Show analytics of the logs in the dashboard
 
 5. **Access the Application**
-   - **Frontend**: http://localhost:3000
+   - **Frontend**: http://localhost:3000/log-analyzer/
    - **Backend API**: http://localhost:5000/log-analyzer/api/
    - **Database**: PostgreSQL on localhost:5433
 
@@ -136,8 +138,8 @@ The Log Analyzer has three main parts:
 │   (Next.js)     │◄──►│   (Flask)       │◄──►│   (PostgreSQL)  │
 │                 │    │                 │    │                 │
 │ • Dashboard     │    │ • ML Models     │    │ • Log Files     │
-│ • Real-time     │    │ • LLM Service   │    │ • Anomalies     │
-│ • Analytics     │    │ • Rule Engine   │    │ • Users         │
+│ • User Auth     │    │ • LLM Service   │    │ • Anomalies     │
+│ • Upload        │    │ • Rule Engine   │    │ • Users         │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                               │
                               ▼
@@ -147,8 +149,6 @@ The Log Analyzer has three main parts:
                        │ • Isolation     │
                        │   Forest        │
                        │ • LOF           │
-                       │ • Feature       │
-                       │   Engineering   │
                        └─────────────────┘
 ```
 
@@ -156,15 +156,13 @@ The Log Analyzer has three main parts:
 
 The system uses two smart algorithms to find suspicious activities:
 
-#### 1. Pattern Detection
-- Finds unusual patterns in your logs
-- Detects when something doesn't look normal
-- Works like a security guard watching for anything suspicious
 
-#### 2. Behavior Analysis
-- Compares current activity with normal behavior
-- Spots when someone is acting differently than usual
-- Helps catch sneaky attacks that try to blend in
+- **Rule-based Security Detection**: Identifies specific attack patterns including brute force attempts, suspicious domains, and data exfiltration
+- **Machine Learning Algorithms**: Two complementary algorithms work in parallel:
+  - **Isolation Forest**: Isolates data points that differ from the majority using random partitioning
+  - **Local Outlier Factor (LOF)**: Compares each data point to its neighbors to detect unusual behavior patterns
+
+Both models analyze the same log data using different mathematical approaches, providing more reliable threat detection through ensemble methods.
 
 ### What It Looks For
 The system checks for:
@@ -184,54 +182,6 @@ The system uses Google's AI to understand threats better:
 - Gives you advice on how to protect yourself
 - Creates easy-to-read security reports
 
-#### Example AI Report
-```
-THREAT DETECTED:
-- Type: Someone trying to break into your admin area
-- How Serious: Very High
-- What Happened: Same person tried to access admin pages 50 times
-- What to Do: Block this person's IP address
-```
-
-
-## Types of Threats It Detects
-
-The system looks for these common attacks:
-
-#### 1. Brute Force Attacks
-- Someone trying to guess passwords
-- Multiple failed login attempts
-- Repeated access to admin pages
-
-#### 2. Automated Tools
-- Bots scanning your website
-- Automated tools trying to find vulnerabilities
-- Scripts downloading your content
-
-#### 3. Suspicious Domains
-- Fake websites trying to trick users
-- Domains with weird names
-- Sites that look like yours but aren't
-
-#### 4. Data Theft
-- Someone downloading too much data
-- Unusual file access patterns
-- Large data transfers at odd times
-
-## How It Rates Threats
-
-The system gives each threat a confidence score (how sure it is):
-
-#### Threat Levels
-- **High (80-100%)**: Very sure this is a real threat
-- **Medium (60-79%)**: Pretty sure, but could be wrong
-- **Low (40-59%)**: Might be a threat, needs checking
-
-#### What Makes It More Confident
-- Multiple signs pointing to the same threat
-- Very unusual behavior patterns
-- Clear attack signatures
-- AI agrees with the machine learning
 
 ## Types of Attacks It Finds
 
@@ -254,10 +204,26 @@ The system gives each threat a confidence score (how sure it is):
 - Fake websites trying to trick users
 - Domains that look like yours
 
+## How It Rates Threats
+
+The system gives each threat a confidence score (how sure it is):
+
+#### Threat Levels
+- **High (80-100%)**: Very sure this is a real threat
+- **Medium (60-79%)**: Pretty sure, but could be wrong
+- **Low (40-59%)**: Might be a threat, needs checking
+
+#### What Makes It More Confident
+- Multiple signs pointing to the same threat
+- Very unusual behavior patterns
+- Clear attack signatures
+- AI agrees with the machine learning
+
+
 ## What You'll See
 
-### Real-Time Dashboard
-- Live count of threats detected
+### Analytics Dashboard
+- Count of threats detected
 - Breakdown of threat severity (High/Medium/Low)
 - How well the system is performing
 - Trends over time
@@ -273,7 +239,6 @@ The system gives each threat a confidence score (how sure it is):
 - Detailed explanation of each threat
 - Advice on how to protect yourself
 - Overall risk assessment
-
 
 
 ## Configuration
@@ -323,34 +288,6 @@ MAX_SUBDOMAINS = 2
 ### Authentication Endpoints
 - `POST /auth/login` - User login
 - `POST /auth/register` - User registration
-
-## Security Features
-
-### Data Protection
-- **Encryption**: All sensitive data encrypted at rest
-- **Access Control**: Role-based authentication
-- **Audit Logging**: Complete audit trail
-- **Input Validation**: Comprehensive input sanitization
-
-### Threat Intelligence
-- **Real-time Monitoring**: Continuous log analysis
-- **Alert System**: Immediate threat notifications
-- **Incident Response**: Automated response workflows
-- **Forensics**: Detailed investigation capabilities
-
-## Performance Metrics
-
-### System Performance
-- **Throughput**: 10,000+ log entries/second
-- **Latency**: <100ms analysis response time
-- **Accuracy**: 95%+ threat detection accuracy
-- **Scalability**: Horizontal scaling support
-
-### ML Model Performance
-- **Isolation Forest**: 92% precision, 89% recall
-- **LOF**: 88% precision, 91% recall
-- **Ensemble**: 94% precision, 93% recall
-
 
 ## Tech Stack
 
