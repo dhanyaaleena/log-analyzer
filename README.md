@@ -1,17 +1,13 @@
 # Log Analyzer - Security Analytics Platform
 
-A comprehensive log analysis platform that combines machine learning, LLM integration, and rule-based threat detection to identify security anomalies and potential threats in web server logs.
+A simple and powerful tool that analyzes web server logs to detect security threats and suspicious activities using machine learning and AI.
 
-## 🏗️ System Architecture
+## 🏗️ How It Works
 
-### Overview
-The Log Analyzer is a full-stack application consisting of:
-- **Frontend**: Next.js React application with real-time dashboards
-- **Backend**: Flask API with ML-powered anomaly detection
-- **Database**: SQLAlchemy with PostgreSQL for data persistence
-- **ML Pipeline**: Ensemble of isolation forest and LOF algorithms
-- **LLM Integration**: Google Gemini for intelligent threat analysis
-- **Rule Engine**: Multi-layered security rule detection
+The Log Analyzer has three main parts:
+- **Frontend**: A web dashboard where you can upload logs and view results
+- **Backend**: The brain that analyzes logs using AI and machine learning
+- **Database**: Stores all your log files and analysis results
 
 ### Architecture Diagram
 ```
@@ -36,192 +32,134 @@ The Log Analyzer is a full-stack application consisting of:
                        └─────────────────┘
 ```
 
-## 🤖 Machine Learning Models
+## 🤖 How It Detects Threats
 
-### Ensemble Approach
-The system employs multiple ML models for robust anomaly detection:
+The system uses two smart algorithms to find suspicious activities:
 
-#### 1. Isolation Forest
-- **Purpose**: Detects global outliers in log patterns
-- **Algorithm**: Unsupervised learning using random partitioning
-- **Features**: Request frequency, response times, status codes, bytes transferred
-- **Advantage**: Effective for detecting novel attack patterns
+#### 1. Pattern Detection
+- Finds unusual patterns in your logs
+- Detects when something doesn't look normal
+- Works like a security guard watching for anything suspicious
 
-#### 2. Local Outlier Factor (LOF)
-- **Purpose**: Identifies local density-based anomalies
-- **Algorithm**: Compares local density with neighbors
-- **Features**: User agent patterns, domain access patterns, IP behavior
-- **Advantage**: Sensitive to contextual anomalies
+#### 2. Behavior Analysis
+- Compares current activity with normal behavior
+- Spots when someone is acting differently than usual
+- Helps catch sneaky attacks that try to blend in
 
-### Feature Engineering
-```python
-# Key features extracted from log entries:
-- Request frequency per IP
-- Status code distributions
-- Response time patterns
-- Bytes transferred patterns
-- User agent diversity
-- Domain access patterns
-- Temporal patterns (time-based)
+### What It Looks For
+The system checks for:
+- How often someone visits your site
+- What pages they're trying to access
+- How much data they're downloading
+- What time they're visiting
+- Whether they're using suspicious tools
+
+## 🧠 AI-Powered Analysis
+
+The system uses Google's AI to understand threats better:
+
+#### What the AI Does
+- Explains what each threat means in simple terms
+- Tells you how serious the threat is
+- Gives you advice on how to protect yourself
+- Creates easy-to-read security reports
+
+#### Example AI Report
+```
+🚨 THREAT DETECTED:
+- Type: Someone trying to break into your admin area
+- How Serious: Very High
+- What Happened: Same person tried to access admin pages 50 times
+- What to Do: Block this person's IP address
 ```
 
-### Model Performance Metrics
-- **Precision**: High accuracy in threat detection
-- **Recall**: Comprehensive coverage of security events
-- **F1-Score**: Balanced performance across all metrics
-- **Confidence Scoring**: Multi-factor confidence calculation
 
-## 🧠 LLM Integration (Google Gemini)
+## 🛡️ Types of Threats It Detects
 
-### Intelligent Threat Analysis
-The system integrates Google Gemini for advanced threat analysis:
+The system looks for these common attacks:
 
-#### Capabilities
-- **Contextual Analysis**: Understands log entry context and patterns
-- **Threat Explanation**: Generates human-readable explanations for anomalies
-- **Risk Assessment**: Provides detailed risk analysis and recommendations
-- **SOC Reporting**: Creates comprehensive security reports
+#### 1. Brute Force Attacks
+- Someone trying to guess passwords
+- Multiple failed login attempts
+- Repeated access to admin pages
 
-#### LLM Service Features
-```python
-# LLM Service Capabilities:
-- Anomaly explanation generation
-- Threat categorization
-- Risk mitigation recommendations
-- SOC report generation
-- Confidence score enhancement
-```
+#### 2. Automated Tools
+- Bots scanning your website
+- Automated tools trying to find vulnerabilities
+- Scripts downloading your content
 
-### Example LLM Output
-```
-ANOMALY DETECTED:
-- Type: Brute Force Attempt
-- Severity: High
-- Confidence: 85%
-- Explanation: Multiple 403 errors from same IP indicate 
-  potential brute force attack targeting admin endpoints
-- Recommendations: Block IP, enable rate limiting, 
-  monitor for additional attempts
-```
+#### 3. Suspicious Domains
+- Fake websites trying to trick users
+- Domains with weird names
+- Sites that look like yours but aren't
 
-## 🛡️ Rule-Based Threat Detection
+#### 4. Data Theft
+- Someone downloading too much data
+- Unusual file access patterns
+- Large data transfers at odd times
 
-### Multi-Layer Security Rules
+## 📊 How It Rates Threats
 
-#### 1. Brute Force Detection
-```python
-# Detection Logic:
-- Multiple 403 errors from same IP
-- High frequency of failed requests
-- Pattern analysis across time windows
-- Confidence scoring based on frequency
-```
+The system gives each threat a confidence score (how sure it is):
 
-#### 2. Automation Tool Detection
-```python
-# User-Agent Analysis:
-- curl, wget, python, postman detection
-- Bot and crawler identification
-- Automated request pattern recognition
-- Confidence based on tool signatures
-```
+#### Threat Levels
+- **High (80-100%)**: Very sure this is a real threat
+- **Medium (60-79%)**: Pretty sure, but could be wrong
+- **Low (40-59%)**: Might be a threat, needs checking
 
-#### 3. Suspicious Domain Detection
-```python
-# Domain Analysis:
-- Typosquatting detection (google → g00gle)
-- Suspicious TLD identification (.xyz, .top, .cc)
-- Random domain pattern recognition
-- Excessive subdomain detection
-```
+#### What Makes It More Confident
+- Multiple signs pointing to the same threat
+- Very unusual behavior patterns
+- Clear attack signatures
+- AI agrees with the machine learning
 
-#### 4. Data Exfiltration Detection
-```python
-# Transfer Pattern Analysis:
-- Unusual data transfer volumes
-- Statistical deviation from baseline
-- Pattern recognition in bytes transferred
-- Temporal analysis of transfer patterns
-```
+## 🔍 Types of Attacks It Finds
 
-## 📊 Confidence Scoring System
+### 1. Login Attacks
+- Someone trying to guess passwords
+- Automated login attempts
+- Stolen session attacks
 
-### Multi-Factor Confidence Calculation
+### 2. Information Gathering
+- Scanning your website for vulnerabilities
+- Trying to find hidden files
+- Looking for admin pages
 
-#### Base Confidence Scores
-```python
-confidence_scores = {
-    'brute_force_403': 0.85,
-    'automation_detected': 0.75,
-    'suspicious_domain': 0.90,
-    'rare_domain': 0.60,
-    'data_exfiltration': 0.80,
-    'ml_anomaly': 0.70
-}
-```
+### 3. Data Theft
+- Downloading large amounts of data
+- Accessing files they shouldn't
+- Using your API too much
 
-#### Confidence Enhancement Factors
-1. **Model Agreement**: Both ML models flag same entry (+15%)
-2. **Severity Level**: High severity threats (+10%)
-3. **Statistical Evidence**: Standard deviations > 3 (+10%)
-4. **Pattern Strength**: Multiple indicators (+5%)
+### 4. Malware & Phishing
+- Fake websites trying to trick users
+- Domains that look like yours
 
-#### Example Confidence Calculation
-```python
-# Base: 0.85 (brute force)
-# Model Agreement: +0.15 (both models agree)
-# High Severity: +0.10
-# Statistical Evidence: +0.10 (>3 std dev)
-# Final Confidence: 1.0 (capped at 100%)
-```
+## 📈 What You'll See
 
-## 🔍 Threat Categories
+### Real-Time Dashboard
+- Live count of threats detected
+- Breakdown of threat severity (High/Medium/Low)
+- How well the system is performing
+- Trends over time
 
-### 1. Authentication Attacks
-- **Brute Force**: Multiple failed login attempts
-- **Credential Stuffing**: Automated credential testing
-- **Session Hijacking**: Unusual session patterns
+### Interactive Charts
+- Map showing where threats come from
+- Timeline of when attacks happened
+- Analysis of suspicious IP addresses
+- List of suspicious domains
 
-### 2. Reconnaissance
-- **Port Scanning**: Systematic port access attempts
-- **Directory Traversal**: Path manipulation attempts
-- **Information Gathering**: Excessive HEAD requests
-
-### 3. Data Exfiltration
-- **Large Transfers**: Unusual data volume patterns
-- **Suspicious Downloads**: Unusual file access patterns
-- **API Abuse**: Excessive API calls
-
-### 4. Malware/Phishing
-- **Suspicious Domains**: Typosquatting and malicious TLDs
-- **Malware Downloads**: Suspicious file access patterns
-- **Phishing Attempts**: Deceptive domain patterns
-
-## 📈 Dashboard Features
-
-### Real-Time Analytics
-- **Anomaly Count**: Live threat detection metrics
-- **Severity Distribution**: High/Medium/Low threat breakdown
-- **Model Performance**: ML model accuracy metrics
-- **Trend Analysis**: Temporal threat patterns
-
-### Interactive Visualizations
-- **Threat Map**: Geographic threat visualization
-- **Timeline View**: Chronological threat events
-- **IP Analysis**: Source IP threat patterns
-- **Domain Analysis**: Suspicious domain tracking
-
-### SOC Reporting
-- **Executive Summary**: High-level threat overview
-- **Detailed Analysis**: Comprehensive threat breakdown
-- **Mitigation Recommendations**: Actionable security advice
-- **Risk Assessment**: Quantified risk metrics
+### Security Reports
+- Summary of all threats found
+- Detailed explanation of each threat
+- Advice on how to protect yourself
+- Overall risk assessment
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Docker and Docker Compose installed
-- Google Gemini API key (optional)
+- Google Gemini API key (optional, for AI-powered threat analysis and explanations)
+
 
 ### Docker Deployment (Recommended)
 
@@ -230,13 +168,33 @@ confidence_scores = {
    git clone https://github.com/dhanyaaleena/log-analyzer.git
    cd log-analyzer
    ```
-
 2. **Make the Docker script executable**
    ```bash
    chmod +x docker-run.sh
    ```
 
-3. **Run the Docker setup script**
+3. **Set up Google API Key for AI Analysis (Optional)**
+   ```bash
+   # Copy the example environment file (in project root, outside Docker)
+   cp env.example .env
+   
+   # Edit .env and add your Google API key
+   # Get your API key from: https://makersuite.google.com/app/apikey
+   # GOOGLE_API_KEY=your_actual_api_key_here
+   ```
+   
+   **File Structure:**
+   ```
+   log-analyzer/
+   ├── .env                    ← Create this file here (project root)
+   ├── docker-compose.yml
+   ├── env.example
+   ├── backend/
+   ├── frontend/
+   └── ...
+   ```
+
+4. **Run the Docker setup script**
    ```bash
    ./docker-run.sh
    ```
@@ -250,14 +208,18 @@ confidence_scores = {
    - Start Next.js frontend
    - Show real-time logs
 
-4. **Access the Application**
-   - **Frontend**: http://localhost:3000
+5. **Access the Application**
+   - **Frontend**: http://localhost:3000/log-analyzer/
    - **Backend API**: http://localhost:5000/log-analyzer/api/
    - **Database**: PostgreSQL on localhost:5433
 
-5. **Default Login Credentials**
+6. **Default Login Credentials**
    - **Username**: `admin`
    - **Password**: `admin123`
+
+**Note**: The Google API key is optional. Without it, the system will still detect threats using machine learning, but won't provide AI-powered explanations and recommendations. 
+
+**How it works**: Docker Compose automatically reads the `.env` file from your project root directory and passes the `GOOGLE_API_KEY` environment variable to the backend container.
 
 ### Docker Management Commands
 

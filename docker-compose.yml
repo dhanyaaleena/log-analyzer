@@ -24,6 +24,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg2://dbuser:db123456@postgres:5432/loganalyzerdb
       FLASK_ENV: development
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
     ports:
       - "5000:5000"
     volumes:
