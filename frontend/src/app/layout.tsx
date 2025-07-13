@@ -9,6 +9,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { log } from "console";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,12 +112,13 @@ export default function RootLayout({
 
   useEffect(() => {
     setIsClient(true);
+    
     if (typeof window !== "undefined") {
       const token = window.localStorage.getItem("token");
       console.log("Layout: Token check -", !!token);
       setIsLoggedIn(!!token);
     }
-  }, []);
+  }, [pathname]);
 
   return (
     <html lang="en">

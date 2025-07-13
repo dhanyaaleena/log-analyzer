@@ -23,13 +23,11 @@ export default function DashboardPage() {
   const filesPerPage = 5;
 
   useEffect(() => {
-    console.log("test")
     const token = window.localStorage.getItem("token");
-    console.log("test %s", token)
     if (!token) {
       router.replace("/login");
     }
-    
+
     // Load files from localStorage and sort by upload time (newest first)
     const stored = window.localStorage.getItem("log_files");
     if (stored) {
