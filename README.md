@@ -6,7 +6,7 @@ A simple tool that analyzes web server logs to detect security threats and suspi
 - **Live Demo**: Visit the deployed application
 - **Local Setup**: Run with Docker
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Option 1: Live Demo
 Visit [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-analyzer/) to test the application.
@@ -86,9 +86,9 @@ Visit [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-an
 ### Test Log Files
 
 The repository includes sample log files for testing:
-- **`synthetic_web_logs_100.log`** - 100 
-- **`synthetic_web_logs_50.log`** - 50
-- **`synthetic_web_logs_500.log`** - 500 testing
+- **`synthetic_web_logs_100.log`** 
+- **`synthetic_web_logs_50.log`** 
+- **`synthetic_web_logs_500.log`** 
 
 These files contain realistic web server logs with embedded security threats including:
 - Brute force attacks (multiple 403 errors)
@@ -122,7 +122,7 @@ docker-compose exec postgres psql -U dbuser -d loganalyzerdb
 docker-compose down -v && docker system prune -f
 ```
 
-## 🏗️ How It Works
+## How It Works
 
 The Log Analyzer has three main parts:
 - **Frontend**: A web dashboard where you can upload logs and view results
@@ -152,7 +152,7 @@ The Log Analyzer has three main parts:
                        └─────────────────┘
 ```
 
-## 🤖 How It Detects Threats
+## How It Detects Threats
 
 The system uses two smart algorithms to find suspicious activities:
 
@@ -174,7 +174,7 @@ The system checks for:
 - What time they're visiting
 - Whether they're using suspicious tools
 
-## 🧠 AI-Powered Analysis
+## AI-Powered Analysis
 
 The system uses Google's AI to understand threats better:
 
@@ -186,7 +186,7 @@ The system uses Google's AI to understand threats better:
 
 #### Example AI Report
 ```
-🚨 THREAT DETECTED:
+THREAT DETECTED:
 - Type: Someone trying to break into your admin area
 - How Serious: Very High
 - What Happened: Same person tried to access admin pages 50 times
@@ -194,7 +194,7 @@ The system uses Google's AI to understand threats better:
 ```
 
 
-## 🛡️ Types of Threats It Detects
+## Types of Threats It Detects
 
 The system looks for these common attacks:
 
@@ -218,7 +218,7 @@ The system looks for these common attacks:
 - Unusual file access patterns
 - Large data transfers at odd times
 
-## 📊 How It Rates Threats
+## How It Rates Threats
 
 The system gives each threat a confidence score (how sure it is):
 
@@ -233,7 +233,7 @@ The system gives each threat a confidence score (how sure it is):
 - Clear attack signatures
 - AI agrees with the machine learning
 
-## 🔍 Types of Attacks It Finds
+## Types of Attacks It Finds
 
 ### 1. Login Attacks
 - Someone trying to guess passwords
@@ -254,7 +254,7 @@ The system gives each threat a confidence score (how sure it is):
 - Fake websites trying to trick users
 - Domains that look like yours
 
-## 📈 What You'll See
+## What You'll See
 
 ### Real-Time Dashboard
 - Live count of threats detected
@@ -276,7 +276,7 @@ The system gives each threat a confidence score (how sure it is):
 
 
 
-## 🔧 Configuration
+## Configuration
 
 ### ML Model Parameters
 ```python
@@ -309,7 +309,7 @@ SUSPICIOUS_TLDS = ['.xyz', '.top', '.cc', '.tk']
 MAX_SUBDOMAINS = 2
 ```
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### Analysis Endpoints
 - `POST /analysis/run` - Run log analysis
@@ -324,7 +324,7 @@ MAX_SUBDOMAINS = 2
 - `POST /auth/login` - User login
 - `POST /auth/register` - User registration
 
-## 🔒 Security Features
+## Security Features
 
 ### Data Protection
 - **Encryption**: All sensitive data encrypted at rest
@@ -338,7 +338,7 @@ MAX_SUBDOMAINS = 2
 - **Incident Response**: Automated response workflows
 - **Forensics**: Detailed investigation capabilities
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 ### System Performance
 - **Throughput**: 10,000+ log entries/second
@@ -351,19 +351,8 @@ MAX_SUBDOMAINS = 2
 - **LOF**: 88% precision, 91% recall
 - **Ensemble**: 94% precision, 93% recall
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Add your changes
-4. Write tests for new functionality
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
+## Tech Stack
 
 - **Scikit-learn**: ML algorithms and preprocessing
 - **Google Gemini**: LLM integration and analysis
