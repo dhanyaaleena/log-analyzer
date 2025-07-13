@@ -132,7 +132,7 @@ export default function RootLayout({
               {isClient && isLoggedIn && (
                 <>
                   {isDashboard && (
-                    <Button color="inherit" href="/log-analyzer">Log Files Dashboard</Button>
+                    <Button color="inherit" href="/log-analyzer/">Log Files Dashboard</Button>
                   )}
                   <Button
                     color="inherit"
