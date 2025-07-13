@@ -8,7 +8,7 @@ import { useTheme } from "@mui/material/styles";
 const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:5000") + "/auth";
 
 export default function LoginPage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
   const theme = useTheme();
   const router = useRouter();
   const [username, setUsername] = useState("");

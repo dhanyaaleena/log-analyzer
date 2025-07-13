@@ -50,8 +50,8 @@ docker-compose logs -f
 
 echo ""
 echo "✅ Log Analyzer is now running!"
-echo "🌐 Frontend: http://localhost:3001"
-echo "🔧 Backend API: http://localhost:5001"
+echo "🌐 Frontend: http://localhost:3000"
+echo "🔧 Backend API: http://localhost:5000"
 echo "🗄️ PostgreSQL: localhost:5433"
 echo ""
 echo "📝 Useful commands:"

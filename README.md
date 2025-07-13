@@ -220,60 +220,69 @@ confidence_scores = {
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.8+
-- Node.js 18+
-- PostgreSQL
+- Docker and Docker Compose installed
 - Google Gemini API key (optional)
 
-### Installation
+### Docker Deployment (Recommended)
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/log-analyzer.git
+   git clone https://github.com/dhanyaaleena/log-analyzer.git
    cd log-analyzer
    ```
 
-2. **Backend Setup**
+2. **Make the Docker script executable**
    ```bash
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
+   chmod +x docker-run.sh
    ```
 
-3. **Frontend Setup**
+3. **Run the Docker setup script**
    ```bash
-   cd frontend
-   npm install
+   ./docker-run.sh
    ```
 
-4. **Environment Configuration**
-   ```bash
-   # Backend (.env)
-   DATABASE_URL=postgresql://user:password@localhost/log_analyzer
-   GOOGLE_API_KEY=your_gemini_api_key  # Optional
-   SECRET_KEY=your_secret_key
-   
-   # Frontend (.env.local)
-   NEXT_PUBLIC_API_URL=http://localhost:5000
-   ```
+   This script will:
+   - Build all Docker images with no cache
+   - Start PostgreSQL database
+   - Initialize database tables automatically
+   - Create default user (admin/admin123)
+   - Start Flask backend API
+   - Start Next.js frontend
+   - Show real-time logs
 
-5. **Database Setup**
-   ```bash
-   cd backend
-   flask db upgrade
-   ```
+4. **Access the Application**
+   - **Frontend**: http://localhost:3000
+   - **Backend API**: http://localhost:5000/log-analyzer/api/
+   - **Database**: PostgreSQL on localhost:5433
 
-6. **Run the Application**
-   ```bash
-   # Backend
-   cd backend
-   python app.py
-   
-   # Frontend (new terminal)
-   cd frontend
-   npm run dev
-   ```
+5. **Default Login Credentials**
+   - **Username**: `admin`
+   - **Password**: `admin123`
+
+### Docker Management Commands
+
+```bash
+# View running containers
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+
+# Rebuild and restart
+docker-compose build --no-cache && docker-compose up -d
+
+# Access backend container
+docker-compose exec backend bash
+
+# Access database
+docker-compose exec postgres psql -U dbuser -d loganalyzerdb
+
+# Clean up everything (including volumes)
+docker-compose down -v && docker system prune -f
+```
 
 ## 🔧 Configuration
 
@@ -322,41 +331,6 @@ MAX_SUBDOMAINS = 2
 ### Authentication Endpoints
 - `POST /auth/login` - User login
 - `POST /auth/register` - User registration
-
-## 🛠️ Development
-
-### Adding New Detection Rules
-```python
-def detect_new_threat(entries, entry_data_list):
-    """Add custom threat detection logic"""
-    threats = []
-    
-    # Your detection logic here
-    for i, data in enumerate(entry_data_list):
-        if your_condition(data):
-            confidence = calculate_confidence_score('new_threat', 'medium')
-            threats.append({
-                'type': 'new_threat',
-                'severity': 'medium',
-                'confidence': confidence,
-                'entry_index': i,
-                # ... other fields
-            })
-    
-    return threats
-```
-
-### Extending ML Models
-```python
-# Add new ML model to ensemble
-from sklearn.ensemble import RandomForestClassifier
-
-def add_random_forest(X, y):
-    """Add Random Forest to ensemble"""
-    rf = RandomForestClassifier(n_estimators=100)
-    rf.fit(X, y)
-    return rf
-```
 
 ## 🔒 Security Features
 

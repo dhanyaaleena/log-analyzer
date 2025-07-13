@@ -25,7 +25,7 @@ services:
       DATABASE_URL: postgresql+psycopg2://dbuser:db123456@postgres:5432/loganalyzerdb
       FLASK_ENV: development
     ports:
-      - "5001:5000"
+      - "5000:5000"
     volumes:
       - ./backend:/app
       - backend_uploads:/app/static/uploads
@@ -38,12 +38,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:5001
+      - NEXT_PUBLIC_API_BASE=http://localhost:5000/log-analyzer/api
     depends_on:
       - backend
 
