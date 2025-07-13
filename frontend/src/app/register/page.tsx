@@ -33,7 +33,7 @@ export default function RegisterPage() {
         setError(data.msg || "Something went wrong");
       } else {
         setSuccess("Registration successful! Redirecting to login...");
-        setTimeout(() => router.replace("/log-analyzer/login"), 1500);
+        setTimeout(() => router.replace("/login"), 1500);
       }
     } catch (err) { // eslint-disable-line @typescript-eslint/no-unused-vars
       setError("Network error");

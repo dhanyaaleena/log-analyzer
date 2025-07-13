@@ -5,6 +5,9 @@ import { Typography, Button, Box, LinearProgress, Alert, Divider, Paper } from "
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import api from "../../lib/api";
 
+console.log("Component mounted"); // top level inside component
+
+
 export default function UploadPage() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
@@ -13,7 +16,9 @@ export default function UploadPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log("test")
     const token = window.localStorage.getItem("token");
+    console.log("test %s", token)
     if (!token) {
       router.replace("/login");
     }
