@@ -2,21 +2,28 @@
 
 A simple tool that analyzes web server logs to detect security threats and suspicious activities using machine learning and AI.
 
-🌐 **Live Demo**: [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-analyzer/)
+**Options:**
+- **Live Demo**: Visit the deployed application
+- **Local Setup**: Run with Docker
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Option 1: Live Demo
+Visit [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-analyzer/) to test the application.
+
+### Option 2: Run Locally with Docker
+
+#### Prerequisites
 - Docker and Docker Compose installed
 - Google Gemini API key (optional, for AI-powered threat analysis and explanations)
 
 **To enable AI features:**
-1. Get a free API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Create a `.env` file in project root: `cp env.example .env`
-3. Add your API key to `.env`: `GOOGLE_API_KEY=your_key_here`
+1. Get an API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Create a `.env` file: `cp env.example .env`
+3. Add your API key: `GOOGLE_API_KEY=your_key_here`
 4. Restart Docker: `docker-compose restart backend`
 
-### Docker Deployment (Recommended)
+### Docker Deployment
 
 1. **Clone the repository**
    ```bash
@@ -72,17 +79,16 @@ A simple tool that analyzes web server logs to detect security threats and suspi
 6. **Default Login Credentials**
    - **Username**: `admin`
    - **Password**: `admin123`
+   Alternatively Register new account.
 
-**Note**: The Google API key is optional. Without it, the system will still detect threats using machine learning, but won't provide AI-powered explanations and recommendations. 
-
-**How it works**: Docker Compose automatically reads the `.env` file from your project root directory and passes the `GOOGLE_API_KEY` environment variable to the backend container.
+**Note**: The Google API key is optional. Without it, the system will still detect threats using machine learning, but won't provide AI-powered explanations and recommendations.
 
 ### Test Log Files
 
 The repository includes sample log files for testing:
-- **`synthetic_web_logs_100.log`** - 100 log entries with various threats
-- **`synthetic_web_logs_50.log`** - 50 log entries for quick testing
-- **`synthetic_web_logs_500.log`** - 500 log entries for comprehensive testing
+- **`synthetic_web_logs_100.log`** - 100 
+- **`synthetic_web_logs_50.log`** - 50
+- **`synthetic_web_logs_500.log`** - 500 testing
 
 These files contain realistic web server logs with embedded security threats including:
 - Brute force attacks (multiple 403 errors)
