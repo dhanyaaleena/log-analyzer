@@ -11,6 +11,11 @@ A simple tool that analyzes web server logs to detect security threats and suspi
 ### Option 1: Live Demo
 Visit [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-analyzer/) to test the application.
 
+**Default Login Credentials**
+   - **Username**: `admin`
+   - **Password**: `admin123`
+   Alternatively Register new account.
+
 Sample logs files to test:
 https://github.com/dhanyaaleena/log-analyzer/blob/master/synthetic_web_logs_50.log
 https://github.com/dhanyaaleena/log-analyzer/blob/master/synthetic_web_logs_100.log
@@ -81,7 +86,7 @@ Lime Demo is AI Enabled.
 6. **Default Login Credentials**
    - **Username**: `admin`
    - **Password**: `admin123`
-   Alternatively Register new account.
+   Alternatively Register new account(no validation is required).
 
 **Note**: The Google API key is optional. Without it, the system will still detect threats using machine learning, but won't provide AI-powered explanations and recommendations.
 
@@ -99,44 +104,21 @@ These files contain realistic web server logs with embedded security threats inc
 - Data exfiltration (unusual data transfers)
 - Rare domain access patterns
 
-### Docker Management Commands
-
-```bash
-# View running containers
-docker-compose ps
-
-# View logs
-docker-compose logs -f
-
-# Stop all services
-docker-compose down
-
-# Rebuild and restart
-docker-compose build --no-cache && docker-compose up -d
-
-# Access backend container
-docker-compose exec backend bash
-
-# Access database
-docker-compose exec postgres psql -U dbuser -d loganalyzerdb
-
-# Clean up everything (including volumes)
-docker-compose down -v && docker system prune -f
-```
 
 ## How It Works
 
-The Log Analyzer has three main parts:
-- **Frontend**: A web dashboard where you can upload logs and view results
-- **Backend**: The brain that analyzes logs using AI and machine learning
-- **Database**: Stores all your log files and analysis results
+The platform implements a three-tier architecture consisting of:
+
+1. **Frontend Layer**: Next.js-based web interface providing analytics dashboard
+2. **Backend Layer**: Flask API with integrated machine learning pipeline
+3. **Data Layer**: PostgreSQL database with log files and analysis results
 
 ### Architecture Diagram
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Backend API   │    │   Database      │
 │   (Next.js)     │◄──►│   (Flask)       │◄──►│   (PostgreSQL)  │
-│                 │    │                 │    │                 │
+│                 │    │ • Log Parsing   │    │                 │
 │ • Dashboard     │    │ • ML Models     │    │ • Log Files     │
 │ • User Auth     │    │ • LLM Service   │    │ • Anomalies     │
 │ • Upload        │    │ • Rule Engine   │    │ • Users         │
@@ -152,94 +134,106 @@ The Log Analyzer has three main parts:
                        └─────────────────┘
 ```
 
-## How It Detects Threats
-
-The system uses two smart algorithms to find suspicious activities:
 
 
-- **Rule-based Security Detection**: Identifies specific attack patterns including brute force attempts, suspicious domains, and data exfiltration
-- **Machine Learning Algorithms**: Two complementary algorithms work in parallel:
-  - **Isolation Forest**: Isolates data points that differ from the majority using random partitioning
-  - **Local Outlier Factor (LOF)**: Compares each data point to its neighbors to detect unusual behavior patterns
+### Data Flow Architecture
 
-Both models analyze the same log data using different mathematical approaches, providing more reliable threat detection through ensemble methods.
+The system processes log entries through a multi-stage pipeline:
+- Log parsing and feature extraction
+- Rule-based security analysis
+- Machine learning anomaly detection
+- Confidence scoring and threat classification
+- AI-powered explanation generation
 
-### What It Looks For
-The system checks for:
-- How often someone visits your site
-- What pages they're trying to access
-- How much data they're downloading
-- What time they're visiting
-- Whether they're using suspicious tools
+## Log File Processing
 
-## AI-Powered Analysis
+The system processes web server logs in the following standardized format:
 
-The system uses Google's AI to understand threats better:
+**Log Entry Structure**
+```
+Timestamp Source_IP Destination_IP Domain Action Method Status_Code User_Agent Bytes_Sent Bytes_Received
+```
 
-#### What the AI Does
-- Explains what each threat means in simple terms
-- Tells you how serious the threat is
-- Gives you advice on how to protect yourself
-- Creates easy-to-read security reports
+**Field Definitions**
+- **Timestamp**: ISO 8601 format (YYYY-MM-DD HH:MM:SS)
+- **Source IP**: Internal network IP address (192.168.x.x)
+- **Destination IP**: External server IP address
+- **Domain**: Requested domain name
+- **Action**: Security action taken (Allowed/Blocked)
+- **Method**: HTTP request method (GET/POST/PUT/DELETE)
+- **Status Code**: HTTP response status code
+- **User Agent**: Client browser/application identifier
+- **Bytes Sent**: Data transmitted from client
+- **Bytes Received**: Data received by client
 
+### Log Parsing Implementation
 
-## Types of Attacks It Finds
+**Parser Architecture**
+The system implements a space-delimited parsing algorithm that processes log entries line by line:
 
-### 1. Login Attacks
-- Someone trying to guess passwords
-- Automated login attempts
-- Stolen session attacks
+**Parsing Algorithm**
+- Line-by-line file processing with streaming approach
+- Space-separated field extraction using split operation
+- Fixed-field parsing with 10 expected components
+- Error handling for malformed or incomplete entries
 
-### 2. Information Gathering
-- Scanning your website for vulnerabilities
-- Trying to find hidden files
-- Looking for admin pages
-
-### 3. Data Theft
-- Downloading large amounts of data
-- Accessing files they shouldn't
-- Using your API too much
-
-### 4. Malware & Phishing
-- Fake websites trying to trick users
-- Domains that look like yours
-
-## How It Rates Threats
-
-The system gives each threat a confidence score (how sure it is):
-
-#### Threat Levels
-- **High (80-100%)**: Very sure this is a real threat
-- **Medium (60-79%)**: Pretty sure, but could be wrong
-- **Low (40-59%)**: Might be a threat, needs checking
-
-#### What Makes It More Confident
-- Multiple signs pointing to the same threat
-- Very unusual behavior patterns
-- Clear attack signatures
-- AI agrees with the machine learning
+**Data Validation**
+- IP address format verification
+- Timestamp parsing and validation using datetime.strptime
+- HTTP status code range checking
+- User agent string normalization
 
 
-## What You'll See
+## Machine Learning Implementation
 
-### Analytics Dashboard
-- Count of threats detected
-- Breakdown of threat severity (High/Medium/Low)
-- How well the system is performing
-- Trends over time
+The system implements a dual-algorithm approach for anomaly detection:
 
-### Interactive Charts
-- Map showing where threats come from
-- Timeline of when attacks happened
-- Analysis of suspicious IP addresses
-- List of suspicious domains
+**Isolation Forest Algorithm**
+- Uses random partitioning to find unusual data points
+- Expects 10% of data to be anomalies
+- Uses 100 decision trees for reliable detection
+- Works by isolating data points that are different from the majority
 
-### Security Reports
-- Summary of all threats found
-- Detailed explanation of each threat
-- Advice on how to protect yourself
-- Overall risk assessment
+**Local Outlier Factor (LOF)**
+- Compares each data point to its 20 nearest neighbors
+- Identifies points that are far from their neighbors
+- Also expects 10% of data to be anomalies
+- Measures how isolated each point is from its local group
 
+### Feature Engineering Pipeline
+
+The system extracts seven numerical features from each log entry:
+- HTTP status code (normalized)
+- Bytes transmitted (sent/received)
+- Domain name length
+- User agent string length
+- Request blocking status (binary)
+- HTTP method type (encoded)
+- Request timestamp patterns
+
+## Security Detection Engine
+
+### Rule-Based Detection Framework
+
+The system implements four primary security detection categories:
+
+**Brute Force Attack Detection**
+- Monitors multiple 403 errors from identical source IPs
+- Implements minimum threshold of 2 attempts for pattern recognition
+- Calculates confidence based on attempt frequency and distribution
+
+**Information Gathering Detection**n
+- Idetifies scanning patterns through request frequency analysis
+- Detects access attempts to administrative endpoints
+
+**Data Exfiltration Detection**
+- Analyzes data transfer patterns using statistical thresholds
+- Monitors unusual data volume transfers relative to baseline
+
+**Malware and Phishing Detection**
+- Implements domain reputation analysis
+- Detects typosquatting patterns through string similarity algorithms
+- Identifies suspicious top-level domains through blacklist comparison
 
 ## Configuration
 
