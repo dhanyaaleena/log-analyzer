@@ -1,6 +1,120 @@
 # Log Analyzer - Security Analytics Platform
 
-A simple and powerful tool that analyzes web server logs to detect security threats and suspicious activities using machine learning and AI.
+A simple tool that analyzes web server logs to detect security threats and suspicious activities using machine learning and AI.
+
+🌐 **Live Demo**: [https://www.sagestack.org/log-analyzer/](https://www.sagestack.org/log-analyzer/)
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Docker and Docker Compose installed
+- Google Gemini API key (optional, for AI-powered threat analysis and explanations)
+
+**To enable AI features:**
+1. Get a free API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Create a `.env` file in project root: `cp env.example .env`
+3. Add your API key to `.env`: `GOOGLE_API_KEY=your_key_here`
+4. Restart Docker: `docker-compose restart backend`
+
+### Docker Deployment (Recommended)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/dhanyaaleena/log-analyzer.git
+   cd log-analyzer
+   ```
+
+2. **Make the Docker script executable**
+   ```bash
+   chmod +x docker-run.sh
+   ```
+
+3. **Set up Google API Key for AI Analysis (Optional)**
+   ```bash
+   # Copy the example environment file (in project root, outside Docker)
+   cp env.example .env
+   
+   # Edit .env and add your Google API key
+   # Get your API key from: https://makersuite.google.com/app/apikey
+   # GOOGLE_API_KEY=your_actual_api_key_here
+   ```
+   
+   **File Structure:**
+   ```
+   log-analyzer/
+   ├── .env                    ← Create this file here (project root)
+   ├── docker-compose.yml
+   ├── env.example
+   ├── backend/
+   ├── frontend/
+   └── ...
+   ```
+
+4. **Run the Docker setup script**
+   ```bash
+   ./docker-run.sh
+   ```
+
+   This script will:
+   - Build all Docker images with no cache
+   - Start PostgreSQL database
+   - Initialize database tables automatically
+   - Create default user (admin/admin123)
+   - Start Flask backend API
+   - Start Next.js frontend
+   - Show real-time logs
+
+5. **Access the Application**
+   - **Frontend**: http://localhost:3000
+   - **Backend API**: http://localhost:5000/log-analyzer/api/
+   - **Database**: PostgreSQL on localhost:5433
+
+6. **Default Login Credentials**
+   - **Username**: `admin`
+   - **Password**: `admin123`
+
+**Note**: The Google API key is optional. Without it, the system will still detect threats using machine learning, but won't provide AI-powered explanations and recommendations. 
+
+**How it works**: Docker Compose automatically reads the `.env` file from your project root directory and passes the `GOOGLE_API_KEY` environment variable to the backend container.
+
+### Test Log Files
+
+The repository includes sample log files for testing:
+- **`synthetic_web_logs_100.log`** - 100 log entries with various threats
+- **`synthetic_web_logs_50.log`** - 50 log entries for quick testing
+- **`synthetic_web_logs_500.log`** - 500 log entries for comprehensive testing
+
+These files contain realistic web server logs with embedded security threats including:
+- Brute force attacks (multiple 403 errors)
+- Automated tools (curl, wget, python scripts)
+- Suspicious domains (typosquatting, malicious TLDs)
+- Data exfiltration (unusual data transfers)
+- Rare domain access patterns
+
+### Docker Management Commands
+
+```bash
+# View running containers
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+
+# Rebuild and restart
+docker-compose build --no-cache && docker-compose up -d
+
+# Access backend container
+docker-compose exec backend bash
+
+# Access database
+docker-compose exec postgres psql -U dbuser -d loganalyzerdb
+
+# Clean up everything (including volumes)
+docker-compose down -v && docker system prune -f
+```
 
 ## 🏗️ How It Works
 
@@ -154,97 +268,7 @@ The system gives each threat a confidence score (how sure it is):
 - Advice on how to protect yourself
 - Overall risk assessment
 
-## 🚀 Quick Start
 
-### Prerequisites
-- Docker and Docker Compose installed
-- Google Gemini API key (optional, for AI-powered threat analysis and explanations)
-
-
-### Docker Deployment (Recommended)
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/dhanyaaleena/log-analyzer.git
-   cd log-analyzer
-   ```
-2. **Make the Docker script executable**
-   ```bash
-   chmod +x docker-run.sh
-   ```
-
-3. **Set up Google API Key for AI Analysis (Optional)**
-   ```bash
-   # Copy the example environment file (in project root, outside Docker)
-   cp env.example .env
-   
-   # Edit .env and add your Google API key
-   # Get your API key from: https://makersuite.google.com/app/apikey
-   # GOOGLE_API_KEY=your_actual_api_key_here
-   ```
-   
-   **File Structure:**
-   ```
-   log-analyzer/
-   ├── .env                    ← Create this file here (project root)
-   ├── docker-compose.yml
-   ├── env.example
-   ├── backend/
-   ├── frontend/
-   └── ...
-   ```
-
-4. **Run the Docker setup script**
-   ```bash
-   ./docker-run.sh
-   ```
-
-   This script will:
-   - Build all Docker images with no cache
-   - Start PostgreSQL database
-   - Initialize database tables automatically
-   - Create default user (admin/admin123)
-   - Start Flask backend API
-   - Start Next.js frontend
-   - Show real-time logs
-
-5. **Access the Application**
-   - **Frontend**: http://localhost:3000/log-analyzer/
-   - **Backend API**: http://localhost:5000/log-analyzer/api/
-   - **Database**: PostgreSQL on localhost:5433
-
-6. **Default Login Credentials**
-   - **Username**: `admin`
-   - **Password**: `admin123`
-
-**Note**: The Google API key is optional. Without it, the system will still detect threats using machine learning, but won't provide AI-powered explanations and recommendations. 
-
-**How it works**: Docker Compose automatically reads the `.env` file from your project root directory and passes the `GOOGLE_API_KEY` environment variable to the backend container.
-
-### Docker Management Commands
-
-```bash
-# View running containers
-docker-compose ps
-
-# View logs
-docker-compose logs -f
-
-# Stop all services
-docker-compose down
-
-# Rebuild and restart
-docker-compose build --no-cache && docker-compose up -d
-
-# Access backend container
-docker-compose exec backend bash
-
-# Access database
-docker-compose exec postgres psql -U dbuser -d loganalyzerdb
-
-# Clean up everything (including volumes)
-docker-compose down -v && docker system prune -f
-```
 
 ## 🔧 Configuration
 
