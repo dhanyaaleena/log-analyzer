@@ -9,7 +9,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { log } from "console";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
